@@ -10,6 +10,14 @@ resource "aws_security_group" "main" {
     protocol         = "tcp"
     cidr_blocks      = var.allow_cidr // to allow app cidr block
   }
+# we need ssh from workstation bastion node
+  ingress {
+    description      = "SSH"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = var.bastion_cidr // to allow app cidr block
+  }
 
   egress {
     from_port        = 0
