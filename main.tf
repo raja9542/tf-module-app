@@ -101,11 +101,16 @@ resource "aws_launch_template" "main" {
   image_id      = data.aws_ami.centos8.id
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.main.id]
+  user_data = base64encode(templatefile("${path.module}/user_data.sh", {component = var.component, env = var.env}))
+
   # for instance profile attachment of particualr role
   iam_instance_profile {
     arn = aws_iam_instance_profile.profile.arn
   }
-  user_data = base64encode(templatefile("${path.module}/user_data.sh", {component = var.component, env = var.env}))
+
+  instance_market_options {
+    market_type = "spot"
+  }
 }
 
 resource "aws_autoscaling_group" "bar" {
