@@ -30,7 +30,7 @@ resource "aws_placement_group" "test" {
   strategy = "cluster"
 }
 
-resource "aws_launch_template" "foobar" {
+resource "aws_launch_template" "main" {
   name_prefix   = "${var.env}-${var.component}-template"
   image_id      = data.aws_ami.centos8.id
   instance_type = var.instance_type
@@ -44,12 +44,16 @@ resource "aws_autoscaling_group" "bar" {
   force_delete              = true  #force_delete - (Optional) Allows deleting the Auto Scaling Group without waiting for all instances in the pool to terminate
   vpc_zone_identifier       = var.subnet_ids # which subnets/Az we need to create
 
+  launch_template {
+    id      = aws_launch_template.main.id
+    version = "$Latest"
+  }
 
   dynamic "tag" {
     for_each = local.all_tags
     content {
-      key = each.key  # key is env,project,business unit ,owner
-      value = each.value
+      key = tag.value.key
+      value = tag.value.value
       propagate_at_launch = true
     }
   }
