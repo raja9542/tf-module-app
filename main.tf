@@ -25,6 +25,39 @@ resource "aws_iam_instance_profile" "profile" {
   role = aws_iam_role.role.name
 }
 
+resource "aws_iam_policy" "policy" {
+  name        = "${var.env}-${var.component}-parameter-store-policy"
+  path        = "/"
+  description = "${var.env}-${var.component}-parameter-store-policy"
+
+  policy = jsonencode({  # the json code we got from AWS UI
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "VisualEditor0",
+        "Effect": "Allow",
+        "Action": [
+          "ssm:GetParameterHistory",
+          "ssm:GetParametersByPath",
+          "ssm:GetParameters",
+          "ssm:GetParameter"
+        ],
+        "Resource": "arn:aws:ssm:us-east-1:994733300076:parameter/${var.env}.${var.component}*"  #dev.frontend*
+      },
+      {
+        "Sid": "VisualEditor1",
+        "Effect": "Allow",
+        "Action": "ssm:DescribeParameters",
+        "Resource": "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "role-attach" {
+  role       = aws_iam_role.role.name
+  policy_arn = aws_iam_policy.policy.arn
+}
 
 resource "aws_security_group" "main" {
   name        = "${var.env}-${var.component}-security-group"
@@ -66,6 +99,10 @@ resource "aws_launch_template" "main" {
   image_id      = data.aws_ami.centos8.id
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.main.id]
+  # for instance profile attachment of particualr role
+  iam_instance_profile {
+    arn = aws_iam_instance_profile.profile.arn
+  }
 }
 
 resource "aws_autoscaling_group" "bar" {
