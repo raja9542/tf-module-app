@@ -20,6 +20,12 @@ resource "aws_iam_role" "role" {
   )
 }
 
+resource "aws_iam_instance_profile" "profile" {
+  name = "${var.env}-${var.component}-role"
+  role = aws_iam_role.role.name
+}
+
+
 resource "aws_security_group" "main" {
   name        = "${var.env}-${var.component}-security-group"
   description = "${var.env}-${var.component}-security-group" // any name
