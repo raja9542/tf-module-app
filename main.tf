@@ -25,11 +25,6 @@ resource "aws_security_group" "main" {
 }
 
 
-resource "aws_placement_group" "test" {
-  name     = "test"
-  strategy = "cluster"
-}
-
 resource "aws_launch_template" "main" {
   name_prefix   = "${var.env}-${var.component}-template"
   image_id      = data.aws_ami.centos8.id
