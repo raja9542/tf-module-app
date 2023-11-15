@@ -108,25 +108,25 @@ resource "aws_launch_template" "main" {
   }
 }
 
-#resource "aws_autoscaling_group" "bar" {
-#  name                      = "${var.env}-${var.component}-asg" # asg--auto scaling group
-#  max_size                  = var.max_size
-#  min_size                  = var.min_size
-#  desired_capacity          = var.desired_capacity
-#  force_delete              = true  #force_delete - (Optional) Allows deleting the Auto Scaling Group without waiting for all instances in the pool to terminate
-#  vpc_zone_identifier       = var.subnet_ids # which subnets/Az we need to create
-#
-#  launch_template {
-#    id      = aws_launch_template.main.id
-#    version = "$Latest"
-#  }
-#
-#  dynamic "tag" {
-#    for_each = local.all_tags
-#    content {
-#      key = tag.value.key
-#      value = tag.value.value
-#      propagate_at_launch = true
-#    }
-#  }
-#}
+resource "aws_autoscaling_group" "bar" {
+  name                      = "${var.env}-${var.component}-asg" # asg--auto scaling group
+  max_size                  = var.max_size
+  min_size                  = var.min_size
+  desired_capacity          = var.desired_capacity
+  force_delete              = true  #force_delete - (Optional) Allows deleting the Auto Scaling Group without waiting for all instances in the pool to terminate
+  vpc_zone_identifier       = var.subnet_ids # which subnets/Az we need to create
+
+  launch_template {
+    id      = aws_launch_template.main.id
+    version = "$Latest"
+  }
+
+  dynamic "tag" {
+    for_each = local.all_tags
+    content {
+      key = tag.value.key
+      value = tag.value.value
+      propagate_at_launch = true
+    }
+  }
+}
