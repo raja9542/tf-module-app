@@ -23,3 +23,34 @@ resource "aws_security_group" "main" {
     {Name = "${var.env}-${var.component}-security-group"}
   )
 }
+
+
+resource "aws_placement_group" "test" {
+  name     = "test"
+  strategy = "cluster"
+}
+
+resource "aws_launch_template" "foobar" {
+  name_prefix   = "${var.env}-${var.component}-template"
+  image_id      = data.aws_ami.centos8.id
+  instance_type = var.instance_type
+}
+
+resource "aws_autoscaling_group" "bar" {
+  name                      = "${var.env}-${var.component}-asg" # asg--auto scaling group
+  max_size                  = var.max_size
+  min_size                  = var.min_size
+  desired_capacity          = var.desired_capacity
+  force_delete              = true  #force_delete - (Optional) Allows deleting the Auto Scaling Group without waiting for all instances in the pool to terminate
+  vpc_zone_identifier       = var.subnet_ids # which subnets/Az we need to create
+
+
+  dynamic "tag" {
+    for_each = local.all_tags
+    content {
+      key = each.key  # key is env,project,business unit ,owner
+      value = each.value
+      propagate_at_launch = true
+    }
+  }
+}
