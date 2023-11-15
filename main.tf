@@ -1,3 +1,25 @@
+resource "aws_iam_role" "role" {
+  name = "${var.env}-${var.component}-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+  tags = merge(
+    local.common_tags,
+    {Name = "${var.env}-${var.component}-role"}
+  )
+}
+
 resource "aws_security_group" "main" {
   name        = "${var.env}-${var.component}-security-group"
   description = "${var.env}-${var.component}-security-group" // any name
