@@ -117,7 +117,7 @@ resource "aws_launch_template" "main" {
   }
 }
 
-resource "aws_autoscaling_group" "bar" {
+resource "aws_autoscaling_group" "asg" {
   name                      = "${var.env}-${var.component}-asg" # asg--auto scaling group
   max_size                  = var.max_size
   min_size                  = var.min_size
@@ -138,4 +138,22 @@ resource "aws_autoscaling_group" "bar" {
       propagate_at_launch = true
     }
   }
+}
+
+resource "aws_route53_record" "app" {
+  zone_id = "Z09171912J6RDBH9U9MN3"
+  name    = "${var.component}-${var.env}.devopsraja66.online"
+  type    = "CNAME"
+  ttl     = 30
+  records = [var.alb]
+}
+
+# A means in type dns record pointing address(ip address) but here load balancer is providing dns name
+# for that we CNAME ( a name pointing to a name is called CNAME record.. dns name pointing to another dns name)
+
+resource "aws_lb_target_group" "target_group" {
+  name     = "${var.component}-${var.env}"
+  port     = var.app_port
+  protocol = "HTTP"
+  vpc_id   = var.vpc_id
 }
