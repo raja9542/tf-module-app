@@ -124,6 +124,7 @@ resource "aws_autoscaling_group" "asg" {
   desired_capacity          = var.desired_capacity
   force_delete              = true  #force_delete - (Optional) Allows deleting the Auto Scaling Group without waiting for all instances in the pool to terminate
   vpc_zone_identifier       = var.subnet_ids # which subnets/Az we need to create
+  target_group_arns         = [aws_lb_target_group.target_group.arn]
 
   launch_template {
     id      = aws_launch_template.main.id
