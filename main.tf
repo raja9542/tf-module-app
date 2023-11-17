@@ -86,6 +86,14 @@ resource "aws_security_group" "main" {
     protocol         = "tcp"
     cidr_blocks      = var.bastion_cidr // to allow app cidr block
   }
+# for allowing prometheus port
+  ingress {
+    description      = "PROMETHEUS"
+    from_port        = 9100
+    to_port          = 9100
+    protocol         = "tcp"
+    cidr_blocks      = var.monitor_cidr // to allow app cidr block
+  }
 
   egress {
     from_port        = 0
