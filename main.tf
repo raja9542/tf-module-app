@@ -168,3 +168,21 @@ resource "aws_lb_target_group" "target_group" {
     timeout              = 2
   }
 }
+
+# this rule is also for backend components not for frontend components for that we are using condition using listener_priority
+resource "aws_lb_listener_rule" "backend_rule" {
+  count        = var.listener_priority != 0 ? 1 : 0
+  listener_arn = var.listener
+  priority     = var.listener_priority
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.target_group.arn
+  }
+
+  condition {
+    host_header {
+      values = ["${var.component}-${var.env}.devopsraja66.online"]
+    }
+  }
+}
