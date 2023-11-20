@@ -189,6 +189,7 @@ resource "aws_lb_target_group" "target_group" {
     protocol             = "HTTP"
     timeout              = 2
   }
+  deregistration_delay = 10
 }
 
 # this rule is also for backend components not for frontend components for that we are using condition using listener_priority
