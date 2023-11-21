@@ -4,7 +4,8 @@ data "aws_kms_key" "key" {
 
 data "aws_ami" "centos8" {
   most_recent      = true
-  name_regex       = "Centos-8-DevOps-Practice"
-  owners           = ["973714476881"]
+  name_regex       = "ansible-installed"
+  owners           = ["994733300076"]
 
 }
+
