@@ -217,8 +217,9 @@ resource "aws_lb_listener" "frontend" {
   load_balancer_arn = var.alb_arn
   port              = "443"
   protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"  # same as terraform code provided
+  certificate_arn   = "arn:aws:acm:us-east-1:994733300076:certificate/96b16cd3-f7a5-4330-ae4f-d969ed9193f9"
+  # certificate arn we will get from Certificate manager
 
   default_action {
     type             = "forward"
